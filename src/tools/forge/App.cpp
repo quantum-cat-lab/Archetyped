@@ -6,6 +6,7 @@
 #include "commands/CmdSDK.h"
 #include "commands/CmdUtil.h"
 #include "commands/CmdGenSchema.h"
+#include "commands/CmdInit.h"
 
 #include <iostream>
 #include <sstream>
@@ -49,6 +50,7 @@ App::App() {
     addCommand(std::make_unique<CmdCompletions>());
     addCommand(std::make_unique<CmdTest>());
     addCommand(std::make_unique<CmdGenSchema>());
+    addCommand(std::make_unique<CmdInit>());
 }
 
 void App::addCommand(std::unique_ptr<ICommand> cmd) {
@@ -71,7 +73,8 @@ std::string App::resolveAlias(const std::string& name) {
         {"archive-container", "arc-cont"}, {"unarchive-container", "unarc-cont"},
         {"deps-graph", "deps"}, {"---help", "help"},
         // short forms
-        {"ls", "list-mods"}, {"info", "info-mod"}, {"init", "init-mod"},
+        {"ls", "list-mods"}, {"info", "info-mod"},
+        {"init-mod-old", "init-mod"},  // legacy alias for the old `init` -> mod new
         {"b", "build"}, {"r", "run"}, {"st", "status"},
     };
     auto it = aliases.find(name);
@@ -394,6 +397,7 @@ void App::printHelp(const std::string& command) const {
     cli::printSection(cli::iconStar(), "Utilities");
     std::cout << "    " << cli::iconBullet() << " " << cli::bold("doctor") << "               " << cli::gray("System diagnostics") << "\n";
     std::cout << "    " << cli::iconBullet() << " " << cli::bold("status") << "               " << cli::gray("Project status") << "\n";
+    std::cout << "    " << cli::iconBullet() << " " << cli::bold("init") << "   [--reset]    " << cli::gray("Initialize workspace configs (idempotent)") << "\n";
     std::cout << "    " << cli::iconBullet() << " " << cli::bold("clean") << " [--all]" << "        " << cli::gray("Clean artifacts") << "\n";
     std::cout << "    " << cli::iconBullet() << " " << cli::bold("completions") << " <shell>" << "   " << cli::gray("Shell completions") << "\n";
     std::cout << "    " << cli::iconBullet() << " " << cli::bold("test") << "                " << cli::gray("Run SDK integration test") << "\n";

@@ -89,6 +89,7 @@ add_executable(forge
     src/tools/forge/commands/CmdSDK.cpp
     src/tools/forge/commands/CmdUtil.cpp
     src/tools/forge/commands/CmdGenSchema.cpp
+    src/tools/forge/commands/CmdInit.cpp
 )
 target_include_directories(forge PRIVATE ${PROJECT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/src/tools/forge)
 target_link_libraries(forge PRIVATE engine)
