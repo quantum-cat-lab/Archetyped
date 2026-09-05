@@ -1,0 +1,4 @@
+/var/home/mainmasgoose/Documents/PROJECTS/Archetyped/build/Bootstrap.dll
+/var/home/mainmasgoose/Documents/PROJECTS/Archetyped/build/Bootstrap.deps.json
+/var/home/mainmasgoose/Documents/PROJECTS/Archetyped/build/Bootstrap.runtimeconfig.json
+/var/home/mainmasgoose/Documents/PROJECTS/Archetyped/build/Bootstrap.pdb

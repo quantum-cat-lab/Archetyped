@@ -1,0 +1,22 @@
+using System;
+using System.Runtime.InteropServices;
+
+namespace Arche.{{MODULE_NAME}};
+
+public static class Entry
+{
+    [UnmanagedCallersOnly(EntryPoint = "Init")]
+    public static void Init()
+    {
+        Console.WriteLine("[Arche.{{MODULE_NAME}}] Init");
+    }
+
+    [UnmanagedCallersOnly(EntryPoint = "Tick")]
+    public static void Tick(float dt) { }
+
+    [UnmanagedCallersOnly(EntryPoint = "Shutdown")]
+    public static void Shutdown()
+    {
+        Console.WriteLine("[Arche.{{MODULE_NAME}}] Shutdown");
+    }
+}

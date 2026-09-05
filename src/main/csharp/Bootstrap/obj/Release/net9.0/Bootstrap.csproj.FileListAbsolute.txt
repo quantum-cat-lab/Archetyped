@@ -1,0 +1,14 @@
+/var/home/mainmasgoose/Documents/PROJECTS/Archetyped/src/main/csharp/Bootstrap/bin/Release/net9.0/Bootstrap.deps.json
+/var/home/mainmasgoose/Documents/PROJECTS/Archetyped/src/main/csharp/Bootstrap/bin/Release/net9.0/Bootstrap.runtimeconfig.json
+/var/home/mainmasgoose/Documents/PROJECTS/Archetyped/src/main/csharp/Bootstrap/bin/Release/net9.0/Bootstrap.dll
+/var/home/mainmasgoose/Documents/PROJECTS/Archetyped/src/main/csharp/Bootstrap/bin/Release/net9.0/Bootstrap.pdb
+/var/home/mainmasgoose/Documents/PROJECTS/Archetyped/src/main/csharp/Bootstrap/obj/Release/net9.0/Bootstrap.GeneratedMSBuildEditorConfig.editorconfig
+/var/home/mainmasgoose/Documents/PROJECTS/Archetyped/src/main/csharp/Bootstrap/obj/Release/net9.0/Bootstrap.AssemblyInfoInputs.cache
+/var/home/mainmasgoose/Documents/PROJECTS/Archetyped/src/main/csharp/Bootstrap/obj/Release/net9.0/Bootstrap.AssemblyInfo.cs
+/var/home/mainmasgoose/Documents/PROJECTS/Archetyped/src/main/csharp/Bootstrap/obj/Release/net9.0/Bootstrap.csproj.CoreCompileInputs.cache
+/var/home/mainmasgoose/Documents/PROJECTS/Archetyped/src/main/csharp/Bootstrap/obj/Release/net9.0/Bootstrap.sourcelink.json
+/var/home/mainmasgoose/Documents/PROJECTS/Archetyped/src/main/csharp/Bootstrap/obj/Release/net9.0/Bootstrap.dll
+/var/home/mainmasgoose/Documents/PROJECTS/Archetyped/src/main/csharp/Bootstrap/obj/Release/net9.0/refint/Bootstrap.dll
+/var/home/mainmasgoose/Documents/PROJECTS/Archetyped/src/main/csharp/Bootstrap/obj/Release/net9.0/Bootstrap.pdb
+/var/home/mainmasgoose/Documents/PROJECTS/Archetyped/src/main/csharp/Bootstrap/obj/Release/net9.0/Bootstrap.genruntimeconfig.cache
+/var/home/mainmasgoose/Documents/PROJECTS/Archetyped/src/main/csharp/Bootstrap/obj/Release/net9.0/ref/Bootstrap.dll

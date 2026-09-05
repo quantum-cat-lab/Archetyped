@@ -1,0 +1,1 @@
+- 2026-09-01 CLR v1 polish: bindChecked+invalidation+heavy Shared+deps

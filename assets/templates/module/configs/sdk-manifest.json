@@ -1,0 +1,6 @@
+{
+  "provides": [],
+  "requires": [
+    { "name": "archetyped", "version": "1.0.0" }
+  ]
+}
