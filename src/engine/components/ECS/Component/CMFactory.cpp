@@ -10,7 +10,7 @@
 #include <cstdint>
 #include <cstring>
 
-constexpr uint32_t registerCMDomainHash = fnv1aHashConst("archetyped:ecs:registerCMInstance");
+constexpr uint32_t registerCMDomainHash = fnv1aHashConst("archetyped:ecs:registerCMDomain");
 constexpr uint32_t flushCommandsHash = fnv1aHashConst("archetyped:ecs:flushCommands");
 constexpr uint32_t registerComponentHash = fnv1aHashConst("archetyped:ecs:registerComponent");
 constexpr uint32_t attachComponentDeferredHash = fnv1aHashConst("archetyped:ecs:attachComponentDeferred");
@@ -37,10 +37,10 @@ constexpr uint32_t createRegistryHash = fnv1aHashConst("archetyped:ecs:createReg
 constexpr uint32_t registerTypeHash = fnv1aHashConst("archetyped:ecs:registerType");
 constexpr uint32_t createVaultHash = fnv1aHashConst("archetyped:ecs:createVault");
 constexpr uint32_t bindRegistryToVaultHash = fnv1aHashConst("archetyped:ecs:bindRegistryToVault");
-constexpr uint32_t registerDomainWithVaultHash = fnv1aHashConst("archetyped:ecs:registerInstanceWithVault");
+constexpr uint32_t registerDomainWithVaultHash = fnv1aHashConst("archetyped:ecs:registerDomainWithVault");
 constexpr uint32_t registerTableFromRegistryHash = fnv1aHashConst("archetyped:ecs:registerTableFromRegistry");
 constexpr uint32_t linkComponentTableHash = fnv1aHashConst("archetyped:ecs:linkComponentTable");
-constexpr uint32_t destroyDomainHash = fnv1aHashConst("archetyped:ecs:destroyInstance");
+constexpr uint32_t destroyDomainHash = fnv1aHashConst("archetyped:ecs:destroyDomain");
 
 ankerl::unordered_dense::map<uint32_t, ComponentInstance*, IdentityHash> CMFactory::componentManagers;
 ankerl::unordered_dense::map<uint32_t, ComponentRegistry*, IdentityHash> CMFactory::registries;

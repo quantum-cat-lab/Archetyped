@@ -7,7 +7,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <unistd.h>
-constexpr uint32_t registerEBHash = fnv1aHashConst("archetyped:event_bus:registerEBInstance");
+constexpr uint32_t registerEBHash = fnv1aHashConst("archetyped:event_bus:registerEBDomain");
 constexpr uint32_t subscribeEventHash = fnv1aHashConst("archetyped:event_bus:subscribeEvent");
 constexpr uint32_t emitEventHash = fnv1aHashConst("archetyped:event_bus:emitEvent");
 constexpr uint32_t pushEventHash = fnv1aHashConst("archetyped:event_bus:pushEvent");

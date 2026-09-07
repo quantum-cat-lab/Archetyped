@@ -17,7 +17,7 @@ public:
     virtual ~IKernel() = default;
 
     virtual void kernel_call(KernelCMDPacket& packet) = 0;
-    
+
     virtual void sendCMDPacket(FURCMDPacket& packet) = 0;
     virtual void registerCMDMethod(uint32_t hashId, FURMethod method) = 0;
     virtual void setModuleState(const char* modulePath, int state) = 0;

@@ -1,6 +1,6 @@
 #include "WSFactory.h"
 #include "core/FractalKernel.h"
-constexpr uint32_t registerWSDomainHash = fnv1aHashConst("archetyped:work_scheduler:registerWSInstance");
+constexpr uint32_t registerWSDomainHash = fnv1aHashConst("archetyped:work_scheduler:registerWSDomain");
 constexpr uint32_t scheduleTaskHash = fnv1aHashConst("archetyped:work_scheduler:scheduleTask");
 ankerl::unordered_dense::map<uint32_t, ComputeInstance*, IdentityHash> WSFactory::computeSchedulers;
 

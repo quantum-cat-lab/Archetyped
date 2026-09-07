@@ -6,6 +6,7 @@
 #include <fstream>
 #include <iostream>
 #include <algorithm>
+#include <array>
 #include <map>
 #include <set>
 #include <vector>
@@ -62,6 +63,26 @@ static ProviderMap buildProviderMap(Workspace& ws) {
             byName[name].emplace_back(version, mod.value("name", ""), mpath, headers);
         }
     }
+
+    // Engine itself is also an SDK provider: its canonical SDK headers live in
+    // <projectRoot>/include/SDK/. Without this, no module in the workspace can
+    // ever resolve its `requires: [archetyped]` dependency (the engine is not
+    // listed as a workspace module — it's the engine binary).
+    fs::path engineRoot = ws.projectRoot();
+    fs::path engineMan  = engineRoot / "configs" / "sdk-manifest.json";
+    if (fs::exists(engineMan)) {
+        std::ifstream f(engineMan); json ej; f >> ej;
+        if (ej.contains("provides") && ej["provides"].is_array()) {
+            for (auto& prov : ej["provides"]) {
+                std::string name    = prov.value("name", "");
+                std::string version = prov.value("version", "");
+                std::vector<std::string> headers;
+                if (prov.contains("headers") && prov["headers"].is_array())
+                    for (auto& h : prov["headers"]) headers.push_back(h.get<std::string>());
+                byName[name].emplace_back(version, "<engine>", engineRoot.string(), headers);
+            }
+        }
+    }
     return byName;
 }
 
@@ -79,19 +100,99 @@ static fs::path vendorDest(const std::string& modulePath, const std::string& uni
 // =============================================================================
 // Helper: find a provider entry
 // =============================================================================
+// Parse a semver-like version string into [major, minor, patch]. Returns
+// [0,0,0] on parse failure (treated as a wildcard).
+static std::array<int, 3> parseVersion(const std::string& v) {
+    std::array<int, 3> out{0,0,0};
+    if (v.empty()) return out;
+    int idx = 0;
+    std::string cur;
+    auto flush = [&]() {
+        if (idx < 3 && !cur.empty()) {
+            try { out[idx++] = std::stoi(cur); } catch (...) {}
+            cur.clear();
+        }
+    };
+    for (char c : v) {
+        if (c == '.' || c == '-' || c == '+') { flush(); if (idx >= 3) break; }
+        else cur.push_back(c);
+    }
+    flush();
+    return out;
+}
+
+static bool versionSatisfies(const std::string& required, const std::string& provided) {
+    // Empty / "*" matches anything.
+    if (required.empty() || required == "*" || required == "x" || required == "X")
+        return true;
+
+    bool caret = required[0] == '^';
+    bool tilde = required[0] == '~';
+    std::string req = required;
+    if (caret || tilde) req = req.substr(1);
+
+    // Wildcard suffix: "1.x", "1.*", "1.0.x"
+    bool majorWild = req.size() >= 2 && (req.back() == 'x' || req.back() == 'X' || req.back() == '*');
+    if (majorWild) {
+        // Strip trailing ".x" / ".*"
+        size_t dot = req.rfind('.');
+        std::string head = (dot == std::string::npos) ? "" : req.substr(0, dot);
+        auto reqParts  = parseVersion(head);
+        auto provParts = parseVersion(provided);
+        if (reqParts[0] != provParts[0]) return false;
+        if (head.find('.') != std::string::npos && reqParts[1] != provParts[1]) return false;
+        return true;
+    }
+
+    auto reqParts  = parseVersion(req);
+    auto provParts = parseVersion(provided);
+
+    if (tilde) {
+        // ~X.Y.Z: same major.minor, patch >= required patch
+        return reqParts[0] == provParts[0] &&
+               reqParts[1] == provParts[1] &&
+               provParts[2] >= reqParts[2];
+    }
+    if (caret) {
+        // ^X.Y.Z: same major, >= required
+        return reqParts[0] == provParts[0] &&
+               (provParts[0] > 0
+                 ? (provParts[1] > reqParts[1] ||
+                    (provParts[1] == reqParts[1] && provParts[2] >= reqParts[2]))
+                 : (provParts[1] > reqParts[1] ||
+                    (provParts[1] == reqParts[1] && provParts[2] >= reqParts[2])));
+    }
+    // Exact match (major, minor, patch).
+    return reqParts[0] == provParts[0] &&
+           reqParts[1] == provParts[1] &&
+           reqParts[2] == provParts[2];
+}
+
 static bool findProvider(const ProviderMap& byName,
                          const std::string& name, const std::string& ver,
                          std::string& pMod, std::string& pPath, std::vector<std::string>& headers)
 {
     auto it = byName.find(name);
     if (it == byName.end()) return false;
-    for (auto& v : it->second)
+    // Prefer an exact-version match, but accept the first semver-compatible
+    // provider if no exact one is present. This lets modules declare
+    // `requires: ["archetyped@^1.0.0"]` and still bind to `1.0.0`.
+    for (auto& v : it->second) {
         if (std::get<0>(v) == ver) {
             pMod = std::get<1>(v);
             pPath = std::get<2>(v);
             headers = std::get<3>(v);
             return true;
         }
+    }
+    for (auto& v : it->second) {
+        if (versionSatisfies(ver, std::get<0>(v))) {
+            pMod = std::get<1>(v);
+            pPath = std::get<2>(v);
+            headers = std::get<3>(v);
+            return true;
+        }
+    }
     return false;
 }
 
@@ -345,6 +446,14 @@ resolveTransitive(const std::string& modulePath,
                             found = true; break;
                         }
                     }
+                    if (!found) {
+                        for (auto& v : it->second) {
+                            if (versionSatisfies(rver, std::get<0>(v))) {
+                                queue.emplace_back(rname, std::get<0>(v), std::get<1>(v), std::get<2>(v), std::get<3>(v));
+                                found = true; break;
+                            }
+                        }
+                    }
                     if (!found && !quiet)
                         std::cerr << "  warning: transitive dep '" << rname << "@" << rver
                                   << "' required but version not found\n";
@@ -413,9 +522,22 @@ int CmdCheckSdk::execute(const Args& args, Workspace& ws) {
                 allOk = false; continue;
             }
             bool found = false;
+            std::string matchedVersion;
             for (auto& v : it->second) {
                 if (std::get<0>(v) == version) {
-                    found = true;
+                    found = true; matchedVersion = std::get<0>(v); break;
+                }
+            }
+            if (!found) {
+                for (auto& v : it->second) {
+                    if (versionSatisfies(version, std::get<0>(v))) {
+                        found = true; matchedVersion = std::get<0>(v); break;
+                    }
+                }
+            }
+            if (found) {
+                for (auto& v : it->second) {
+                    if (std::get<0>(v) != matchedVersion) continue;
                     std::string provMod = std::get<1>(v);
                     std::string provPath = std::get<2>(v);
                     auto& provHeaders = std::get<3>(v);

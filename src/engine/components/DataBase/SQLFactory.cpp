@@ -4,7 +4,7 @@
 #include "components/DataBase/SqlInstance.h"
 #include <cstdint>
 
-constexpr uint32_t registerSQLDomainHash = fnv1aHashConst("archetyped:sqldb:registerSQLInstance");
+constexpr uint32_t registerSQLDomainHash = fnv1aHashConst("archetyped:sqldb:registerSQLDomain");
 constexpr uint32_t openCMDHash = fnv1aHashConst("archetyped:sqldb:openCMD");
 constexpr uint32_t executeCMDHash = fnv1aHashConst("archetyped:sqldb:executeCMD");
 constexpr uint32_t setStringCMDHash = fnv1aHashConst("archetyped:sqldb:setStringCMD");
