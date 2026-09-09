@@ -2,7 +2,6 @@
 #include "engine/core/FractalKernel.h"
 #include <chrono>
 #include <thread>
-// comment
 int main() {
     Bootstrap::instance().init();
     bool running = true;
